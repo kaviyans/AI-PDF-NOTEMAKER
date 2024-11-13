@@ -13,7 +13,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { api } from "@/convex/_generated/api"
 import { useUser } from "@clerk/nextjs"
-import { useMutation } from "convex/react"
+import axios from "axios"
+import { useAction, useMutation } from "convex/react"
 import { Loader2Icon } from "lucide-react"
 
 import React, { useState } from 'react'
@@ -24,6 +25,7 @@ import uuid4 from "uuid4"
     const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl); 
     const addFileEntry = useMutation(api.fileStorage.AddFileEntryToDb);
     const getFileUrl = useMutation(api.fileStorage.getFileUrl);
+    const embeddDocument = useAction(api.myAction.ingest);
     const {user} = useUser(); 
     const [file,setFile] = useState();
     const [fileName,setFileName] = useState();
@@ -36,27 +38,32 @@ import uuid4 from "uuid4"
     const OnUpload = async()=>{
         setLoading(true);
 
-        const postUrl = await generateUploadUrl();
+        // const postUrl = await generateUploadUrl();
          
-        const result = await fetch(postUrl, {
-            method: "POST",
-            headers: { "Content-Type": file?.type },
-            body: file,
-        });
-        const { storageId } = await result.json();
-        console.log(storageId);
-        const fileId = uuid4();
-        const fileUrl = await getFileUrl({storageId:storageId})
+        // const result = await fetch(postUrl, {
+        //     method: "POST",
+        //     headers: { "Content-Type": file?.type },
+        //     body: file,
+        // });
+        // const { storageId } = await result.json();
+        // console.log(storageId);
+        // const fileId = uuid4();
+        // const fileUrl = await getFileUrl({storageId:storageId})
 
-        const resp = await addFileEntry({
-            fileId:fileId,
-            storageId:storageId,
-            fileName:fileName??'Untitled File',
-            fileUrl:fileUrl, 
-            createdBy:user?.primaryEmailAddress?.emailAddress
-        })
+        // const resp = await addFileEntry({
+        //     fileId:fileId,
+        //     storageId:storageId,
+        //     fileName:fileName??'Untitled File',
+        //     fileUrl:fileUrl, 
+        //     createdBy:user?.primaryEmailAddress?.emailAddress
+        // })
 
-        console.log(resp);
+        // console.log(resp);
+
+
+        const ApiResp = await axios.get('/api/pdf-loader');
+        console.log(ApiResp.data.result);
+        embeddDocument({})
         setLoading(false);
 
     }
