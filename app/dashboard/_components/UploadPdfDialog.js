@@ -16,6 +16,7 @@ import { useUser } from "@clerk/nextjs"
 import axios from "axios"
 import { useAction, useMutation } from "convex/react"
 import { Loader2Icon } from "lucide-react"
+import { split } from "postcss/lib/list"
 
 import React, { useState } from 'react'
 import uuid4 from "uuid4"
@@ -30,6 +31,7 @@ import uuid4 from "uuid4"
     const [file,setFile] = useState();
     const [fileName,setFileName] = useState();
     const [loading,setLoading] = useState(false);
+    const [open,setOpen] = useState(false);
 
     const OnFileSelect = (event)=>{
         setFile(event.target.files[0]);
@@ -38,40 +40,45 @@ import uuid4 from "uuid4"
     const OnUpload = async()=>{
         setLoading(true);
 
-        // const postUrl = await generateUploadUrl();
+        const postUrl = await generateUploadUrl();
          
-        // const result = await fetch(postUrl, {
-        //     method: "POST",
-        //     headers: { "Content-Type": file?.type },
-        //     body: file,
-        // });
-        // const { storageId } = await result.json();
-        // console.log(storageId);
-        // const fileId = uuid4();
-        // const fileUrl = await getFileUrl({storageId:storageId})
+        const result = await fetch(postUrl, {
+            method: "POST",
+            headers: { "Content-Type": file?.type },
+            body: file,
+        });
+        const { storageId } = await result.json();
+        console.log(storageId);
+        const fileId = uuid4();
+        const fileUrl = await getFileUrl({storageId:storageId})
 
-        // const resp = await addFileEntry({
-        //     fileId:fileId,
-        //     storageId:storageId,
-        //     fileName:fileName??'Untitled File',
-        //     fileUrl:fileUrl, 
-        //     createdBy:user?.primaryEmailAddress?.emailAddress
-        // })
+        const resp = await addFileEntry({
+            fileId:fileId,
+            storageId:storageId,
+            fileName:fileName??'Untitled File',
+            fileUrl:fileUrl, 
+            createdBy:user?.primaryEmailAddress?.emailAddress
+        })
 
         // console.log(resp);
 
 
-        const ApiResp = await axios.get('/api/pdf-loader');
+        const ApiResp = await axios.get('/api/pdf-loader?pdfUrl=' + fileUrl);
         console.log(ApiResp.data.result);
-        embeddDocument({})
+        await embeddDocument({
+          splitText:ApiResp.data.result,
+          fileId:fileId
+        })
+        // console.log(embeddedresult);
         setLoading(false);
+        setOpen(false);
 
     }
 
     return (
-        <Dialog>
+        <Dialog open={open}>
         <DialogTrigger asChild>
-            {children}
+            <Button onClick={()=>setOpen(true)} className="w-full">+ Upload PDF</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -98,7 +105,7 @@ import uuid4 from "uuid4"
               Close
             </Button>
           </DialogClose>
-          <Button onClick={OnUpload}>
+          <Button onClick={OnUpload} disabled={loading}>
             {loading?
                 <Loader2Icon className="animate-spin"/>:"Upload"
             }
