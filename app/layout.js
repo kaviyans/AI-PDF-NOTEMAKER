@@ -3,6 +3,7 @@ import "./globals.css";
 import {Outfit} from "next/font/google"
 import Provider from "./Provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner"
  
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <Provider>
             {children}
           </Provider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
