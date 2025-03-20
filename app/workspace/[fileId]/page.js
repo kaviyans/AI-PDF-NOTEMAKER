@@ -31,7 +31,7 @@ function Workspace() {
                no horizontal scroll
         */}
         <div className="h-full overflow-y-auto overflow-x-hidden">
-          <Texteditor />
+          <Texteditor fileId = {fileId}/>
         </div>
         <div className="h-full overflow-y-auto overflow-x-hidden bg-gray-100">
           <PdfViewer fileUrl={fileInfo?.fileUrl} />

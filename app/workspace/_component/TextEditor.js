@@ -8,8 +8,9 @@ import Subscript from '@tiptap/extension-subscript';      // ✅ Correct import
 import React from 'react';
 import EditorExtension from './EditorExtension';
 import Underline from '@tiptap/extension-underline';
+import { useQuery } from 'convex/react';
 
-function Texteditor() {
+function Texteditor({fileId}) {
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -28,6 +29,10 @@ function Texteditor() {
             }
         }
     });
+
+    const notes = useQuery(api.notes.GetNotes,{
+        fileId:fileId
+    })
 
     return (
         <div>
