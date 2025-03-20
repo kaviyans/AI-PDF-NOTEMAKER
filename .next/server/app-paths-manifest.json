@@ -1,4 +1,7 @@
 {
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/workspace/[fileId]/page": "app/workspace/[fileId]/page.js"
+  "/page": "app/page.js",
+  "/workspace/[fileId]/page": "app/workspace/[fileId]/page.js",
+  "/(auth)/sign-in/[[...sign-in]]/page": "app/(auth)/sign-in/[[...sign-in]]/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/upgrade/page": "app/dashboard/upgrade/page.js"
 }

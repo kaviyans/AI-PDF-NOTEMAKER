@@ -42,11 +42,11 @@ function EditorExtension({ editor}) {
         editor.commands.setContent(AllText + '<p> <strong>Answer :</strong>' + FinalAns + '</p>');
         
 
-        console.log(editor.getHTML());
+        // console.log(editor.getHTML());
         saveNotes({
           notes:editor.getHTML(),
           fileId:fileId,
-          createdBy: user?.primaryEmailAddress?.emailAddress || "unknown"
+          createdBy: user?.primaryEmailAddress?.emailAddress
         })
 
     }

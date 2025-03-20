@@ -1,37 +1,43 @@
 "use client"
-import { Button } from "@/components/ui/button";
+
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import {api} from  "@/convex/_generated/api"
 import { useEffect } from "react";
-
-import Image from "next/image";
+import { useRouter } from "next/navigation"; 
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
 
-  const {user} = useUser();
-  const createUser = useMutation(api.user.createUser)
+  const { user, isLoaded } = useUser(); 
+  const createUser = useMutation(api.user.createUser);
+  const router = useRouter();  
 
-  useEffect(()=>{
-    user&&checkuser();
-  },[user])
+  useEffect(() => {
+    if (!isLoaded) return; 
 
-  const checkuser = async ()=>{
+    if (user) {
+      checkUser();
+      router.push("/dashboard");  
+    } else {
+      router.push("/sign-in");  
+    }
+  }, [user, isLoaded]);
+
+  const checkUser = async ()=>{
     const result = await createUser({
       email:user?.primaryEmailAddress?.emailAddress,
       imageUrl:user?.imageUrl,
       userName:user?.fullName
     });
-
-    console.log(result);
-  } 
+  }
 
   return (
-    <div>
-      <h1>hello</h1>
-      <Button>subscibe</Button>
-
-      <UserButton />
+    <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-col items-center gap-4">
+        <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
+        <h1 className="text-lg font-semibold text-gray-700">Loading...</h1>
+      </div>
     </div>
   );
 }

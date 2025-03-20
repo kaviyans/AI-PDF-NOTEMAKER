@@ -21,7 +21,7 @@ import { split } from "postcss/lib/list"
 import React, { useState } from 'react'
 import uuid4 from "uuid4"
   
-  const UploadPdfDialog = ({children}) => {
+  const UploadPdfDialog = ({disabled,children}) => {
 
     const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl); 
     const addFileEntry = useMutation(api.fileStorage.AddFileEntryToDb);
@@ -76,9 +76,17 @@ import uuid4 from "uuid4"
     }
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-            <Button onClick={()=>setOpen(true)} className="w-full">+ Upload PDF</Button>
+                <div className={`${disabled ? "opacity-50 pointer-events-none" : ""}`}>
+                    <Button 
+                        onClick={() => setOpen(true)} 
+                        className="w-full" 
+                        disabled={disabled}
+                    >
+                        + Upload PDF
+                    </Button>
+                </div>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
